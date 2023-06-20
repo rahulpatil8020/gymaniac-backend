@@ -12,14 +12,14 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 dotenv.config();
 
-PORT = process.env.PORT;
-MONGO_CONNECTION_URL = process.env.MONGO_CONNECTION_URL;
+const PORT = process.env.PORT;
+const MONGO_CONNECTION_URL = process.env.MONGO_CONNECTION_URL;
 
 app.use("/api/v1/user", () => {});
 
 mongoose
   .connect(MONGO_CONNECTION_URL, {
-    useNewUrlParserP: true,
+    useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() =>

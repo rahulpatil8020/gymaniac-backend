@@ -44,9 +44,9 @@ export const login = async (req, res) => {
         );
         res.status(200).json({ token, user });
       } else {
-        return res.status(401).json({ message: "invalid Credentials" });
+        return res.status(401).json({ message: "Invalid Credentials" });
       }
-    } else return res.status(404).json({ message: "User Doesn't Exist" });
+    } else return res.status(404).json({ message: "User does not exist" });
   } catch (error) {
     res.status(500).json({ message: "Something went Wrong" });
   }
@@ -64,7 +64,14 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashedPassword = await bcrypt.hash(user.password, salt);
 
-    const newUser = new User(user);
+    const newUser = new User({
+      email: user.email,
+      password: hashedPassword,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: "trainee",
+      level: "beginner",
+    });
     await newUser.save();
     const token = jwt.sign(
       { id: newUser._id, email: newUser.email },

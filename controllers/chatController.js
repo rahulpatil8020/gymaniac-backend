@@ -1,6 +1,6 @@
-export const getAllChats = () => {};
-
-export const getConversationChats = () => {};
+export const getConversationChats = async (req, res) => {
+  const { conversationId } = req.params;
+};
 
 export const createChat = () => {};
 
