@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import userRoutes from "./routes/user.js";
 
 const app = express();
 
@@ -15,7 +16,7 @@ dotenv.config();
 const PORT = process.env.PORT;
 const MONGO_CONNECTION_URL = process.env.MONGO_CONNECTION_URL;
 
-app.use("/api/v1/user", () => {});
+app.use("/api/v1/user", userRoutes);
 
 mongoose
   .connect(MONGO_CONNECTION_URL, {
