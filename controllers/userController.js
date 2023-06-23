@@ -1,9 +1,9 @@
-import User from "../models/user.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+const User = require("../models/user.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
-export const getUser = async (req, res) => {
+const getUser = async (req, res) => {
   const { id } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -16,7 +16,7 @@ export const getUser = async (req, res) => {
   }
 };
 
-export const updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   const { id } = req.params;
   const { user } = req.body;
   try {
@@ -30,7 +30,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   const user = req.body;
   try {
     const existingUser = await User.findOne({ email: user.email });
@@ -84,7 +84,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   const { id } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -96,3 +96,5 @@ export const deleteUser = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+module.exports = { getUser, deleteUser, updateUser, login, signup };
