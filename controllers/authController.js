@@ -8,12 +8,12 @@ const mongoose = require("mongoose");
 // @access public
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   try {
-    if (!email || !password)
+    if (!username || !password)
       return res.status(400).json({ message: "All fields are required" });
 
-    const foundUser = await User.findOne({ email }).exec();
+    const foundUser = await User.findOne({ username }).exec();
     if (!foundUser)
       return res.status(401).json({ message: "User does not exists" });
 
@@ -22,16 +22,16 @@ const login = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        email: foundUser.email,
+        username: foundUser.username,
       },
       process.env.JWT_ACCESS_TOKEN_SECRET,
-      { expiresIn: "20s" }
+      { expiresIn: "10s" }
     );
 
     const refreshToken = jwt.sign(
-      { email: foundUser.email },
+      { username: foundUser.username },
       process.env.JWT_REFRESH_TOKEN_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "20s" }
     );
 
     res.cookie("jwt", refreshToken, {
@@ -62,6 +62,14 @@ const signup = async (req, res) => {
       return res
         .status(409)
         .json({ message: "An account already exists with this username" });
+    const existing = await User.findOne({ email: user.email })
+      .collation({ locale: "en", strength: 2 })
+      .lean()
+      .exec();
+    if (existing)
+      return res
+        .status(409)
+        .json({ message: "This email is already linked to another account" });
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashedPassword = await bcrypt.hash(user.password, salt);
@@ -95,7 +103,6 @@ const refresh = (req, res) => {
     if (!cookies?.jwt)
       return res.status(401).json({ message: "Invalid jwt token provided" });
     const refreshToken = cookies.jwt;
-
     jwt.verify(
       refreshToken,
       process.env.JWT_REFRESH_TOKEN_SECRET,
@@ -103,15 +110,15 @@ const refresh = (req, res) => {
         try {
           if (err) return res.status(403).json({ message: "Forbidden" });
 
-          const foundUser = await User.findOne({ email: decoded.email });
+          const foundUser = await User.findOne({ username: decoded.username });
 
           if (!foundUser)
             return res.status(401).json({ message: "Unauthorized" });
 
           const accessToken = jwt.sign(
-            { user: foundUser.email },
+            { username: foundUser.username },
             process.env.JWT_ACCESS_TOKEN_SECRET,
-            { expiresIn: "20s" }
+            { expiresIn: "10s" }
           );
           res.json({ accessToken });
         } catch (error) {

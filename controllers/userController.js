@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const getUser = async (req, res) => {
-  const email = req.user;
+  const username = req.user;
   try {
-    const user = await User.findOne({ email: email })
+    const user = await User.findOne({ username: username })
       .select("-password")
       .lean();
-    if (!user) return res.status(404).send(`No user with email ${email}`);
+    if (!user) return res.status(404).send(`No user with username ${username}`);
     res.status(200).json(user);
   } catch (error) {
     res.status(404).json({ message: error.message });
