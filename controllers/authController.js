@@ -99,7 +99,6 @@ const signup = async (req, res) => {
 const refresh = (req, res) => {
   try {
     const cookies = req.cookies;
-    console.log(req);
     if (!cookies?.jwt)
       return res.status(401).json({ message: "Invalid jwt token provided" });
     const refreshToken = cookies.jwt;
