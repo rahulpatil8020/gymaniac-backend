@@ -1,7 +1,7 @@
-import Post from "../models/post.js";
-import mongoose from "mongoose";
+const Post = require("../models/post.js");
+const mongoose = require("mongoose");
 
-export const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find();
     res.status(200).json(posts);
@@ -10,7 +10,7 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
-export const getPost = async (req, res) => {
+const getPost = async (req, res) => {
   const { id } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -23,7 +23,7 @@ export const getPost = async (req, res) => {
   }
 };
 
-export const createPost = async (req, res) => {
+const createPost = async (req, res) => {
   const post = req.body;
   const newPost = new Post(post);
   try {
@@ -34,7 +34,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-export const updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
   const post = req.body;
   const { id } = req.params;
   try {
@@ -50,7 +50,7 @@ export const updatePost = async (req, res) => {
   }
 };
 
-export const deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
   const { id } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -62,3 +62,5 @@ export const deletePost = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+module.exports = { getAllPosts, getPost, updatePost, deletePost, createPost };

@@ -12,6 +12,7 @@ const errorHandler = require("./middleware/errorHandler.js");
 const cookieParser = require("cookie-parser");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
+const postRoutes = require("./routes/post.js");
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,7 @@ const PORT = process.env.PORT;
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/post", postRoutes);
 
 app.all("*", (req, res) => {
   a;
