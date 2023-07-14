@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const postSchema = mongoose.Schema({
   creator: { type: String, required: true },
-  likeCount: { type: Number },
+  likedBy: { type: Array },
   comments: { type: Array },
   caption: { type: String },
   Tags: { type: Array },
