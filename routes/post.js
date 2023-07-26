@@ -7,8 +7,11 @@ const {
   updatePost,
   deletePost,
 } = require("../controllers/postController");
+const verifyJWT = require("../middleware/verifyJWT");
 
 const router = express.Router();
+
+router.use(verifyJWT);
 
 router.get("/", getAllPosts);
 router.get("/:id", getPost);

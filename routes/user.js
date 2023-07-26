@@ -11,8 +11,8 @@ const router = express.Router();
 
 router.use(verifyJWT);
 
-router.route("/:id").get(getUser);
-router.route("/:id").patch(updateUser);
-router.route("/:id").delete(deleteUser);
+router.route("/").get(getUser);
+router.route("/").patch(updateUser);
+router.route("/").delete(deleteUser);
 
 module.exports = router;

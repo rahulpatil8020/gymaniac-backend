@@ -12,4 +12,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+// corsOptions.allowedHeaders = ["Authorization", "Content-Type"]; // Add the necessary headers here
+// corsOptions.methods = ["GET", "POST", "PUT", "DELETE"];
+
 module.exports = corsOptions;
