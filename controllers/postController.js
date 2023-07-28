@@ -24,7 +24,15 @@ const getPost = async (req, res) => {
 };
 
 const createPost = async (req, res) => {
-  const post = req.body;
+  const { creator, caption } = req.body;
+  // Access the image data from req.files
+  const image = req?.files.image;
+  console.log("Image:", image);
+
+  const post = {
+    creator,
+    caption,
+  };
   const newPost = new Post(post);
   try {
     await newPost.save();

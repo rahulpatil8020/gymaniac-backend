@@ -13,17 +13,20 @@ const cookieParser = require("cookie-parser");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const postRoutes = require("./routes/post.js");
+const multer = require("multer");
 dotenv.config();
 
 const app = express();
 
 connectDB();
 
+const upload = multer();
+app.use(upload.any());
+
 app.use(logger);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", rootRoute);

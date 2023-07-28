@@ -8,7 +8,7 @@ const postSchema = mongoose.Schema({
   Tags: { type: Array },
   location: { type: String },
   createdOn: { type: Date, default: new Date() },
-  image: { type: String },
+  imageURL: { type: String },
 });
 
 const Post = mongoose.model("Post", postSchema);
