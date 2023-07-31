@@ -15,7 +15,7 @@ router.use(verifyJWT);
 
 router.get("/", getAllPosts);
 router.get("/:id", getPost);
-router.post("/", createPost);
+// router.post("/", createPost);
 router.patch("/:id", updatePost);
 router.delete("/:id", deletePost);
 

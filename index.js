@@ -14,14 +14,16 @@ const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const postRoutes = require("./routes/post.js");
 const multer = require("multer");
+const { createPost } = require("./controllers/postController.js");
+
 dotenv.config();
 
 const app = express();
 
 connectDB();
-
-const upload = multer();
-app.use(upload.any());
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+// app.use(upload.any());
 
 app.use(logger);
 app.use(express.json());
@@ -35,6 +37,8 @@ app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 const PORT = process.env.PORT;
+
+app.post("/api/v1/post", upload.single("image"), createPost);
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auth", authRoutes);
