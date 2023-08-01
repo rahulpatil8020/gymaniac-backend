@@ -1,6 +1,10 @@
 const Post = require("../models/post.js");
 const mongoose = require("mongoose");
-const { uploadToS3, getImageFromS3 } = require("../config/s3.js");
+const {
+  uploadToS3,
+  getImageFromS3,
+  deleteImageFromS3,
+} = require("../config/s3.js");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -80,17 +84,54 @@ const updatePost = async (req, res) => {
   }
 };
 
-const deletePost = async (req, res) => {
-  const { id } = req.params;
+const likePost = async (req, res) => {
+  const { id, userId } = req.body;
   try {
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(404).send(`No post with id : ${id}`);
+    const post = await findById(id);
+    if (!post) return res.status(404).send(`No post with id: ${id}`);
+    if (post?.likedBy?.includes(userId)) {
+      const updatedPost = await Post.findByIdAndUpdate(
+        id,
+        {
+          likedBy: post?.likedBy.filter((user) => user != userId),
+        },
+        { new: true }
+      );
+      res.status(200).json(updatedPost);
+    } else {
+      const updatedPost = await Post.findByIdAndUpdate(
+        id,
+        { likedBy: [...post.likedBy, userId] },
+        { new: true }
+      );
+      res.status(200).json(updatedPost);
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deletePost = async (req, res) => {
+  const { id } = req.body;
+  console.log(id);
+  try {
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).send(`No post with id : ${id}`);
+    const imageKey = post.imageKey;
 
     await Post.findByIdAndRemove(id);
+    await deleteImageFromS3({ imageKey });
     res.status(200).json(id);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
-module.exports = { getAllPosts, getPost, updatePost, deletePost, createPost };
+module.exports = {
+  getAllPosts,
+  getPost,
+  updatePost,
+  deletePost,
+  createPost,
+  likePost,
+};

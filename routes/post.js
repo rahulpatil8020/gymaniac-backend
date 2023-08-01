@@ -6,6 +6,7 @@ const {
   getPost,
   updatePost,
   deletePost,
+  likePost,
 } = require("../controllers/postController");
 const verifyJWT = require("../middleware/verifyJWT");
 
@@ -18,5 +19,6 @@ router.get("/:id", getPost);
 // router.post("/", createPost);
 router.patch("/:id", updatePost);
 router.delete("/:id", deletePost);
+router.patch("/like/:id", likePost);
 
 module.exports = router;
