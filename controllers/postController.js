@@ -85,15 +85,15 @@ const updatePost = async (req, res) => {
 };
 
 const likePost = async (req, res) => {
-  const { id, userId } = req.body;
+  const { id, username } = req.body;
   try {
-    const post = await findById(id);
+    const post = await Post.findById(id);
     if (!post) return res.status(404).send(`No post with id: ${id}`);
-    if (post?.likedBy?.includes(userId)) {
+    if (post?.likedBy?.includes(username)) {
       const updatedPost = await Post.findByIdAndUpdate(
         id,
         {
-          likedBy: post?.likedBy.filter((user) => user != userId),
+          likedBy: post?.likedBy.filter((user) => user != username),
         },
         { new: true }
       );
@@ -101,11 +101,31 @@ const likePost = async (req, res) => {
     } else {
       const updatedPost = await Post.findByIdAndUpdate(
         id,
-        { likedBy: [...post.likedBy, userId] },
+        { likedBy: [...post.likedBy, username] },
         { new: true }
       );
       res.status(200).json(updatedPost);
     }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const comment = async (req, res) => {
+  const { id, comment } = req.body;
+  try {
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json({ message: `Not Found` });
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      {
+        comments: [...post?.comments, comment],
+      },
+      { new: true }
+    );
+    if (!updatedPost)
+      return res.status(400).json({ message: "Something went wrong" });
+    res.status(200).json(updatedPost);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -134,4 +154,5 @@ module.exports = {
   deletePost,
   createPost,
   likePost,
+  comment,
 };
